@@ -1,0 +1,10 @@
+{
+    "require": {
+        "cboden/ratchet": "0.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Formativ\\": "src"
+        }
+    }
+}
