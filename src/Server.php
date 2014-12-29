@@ -130,43 +130,14 @@ class Server implements MessageComponentInterface
     }
 
     /**
-     * @param Connection $connection
-     * @param string     $type
-     * @param string     $status
-     * @param array      $data
+     * @param array $message
+     * @param mixed $default
+     *
+     * @return mixed
      */
-    protected function respond($connection, $type, $status, array $data = [])
+    protected function getTypeFrom(array $message, $default = "unknown")
     {
-        $message = [
-            "type" => $type,
-            "status" => $status,
-        ];
-
-        if (count($data) > 0) {
-            $message["data"] = $data;
-        }
-
-        $connection->send(json_encode($message));
-    }
-
-    /**
-     * @param Connection $connection
-     * @param string     $type
-     * @param array      $data
-     */
-    protected function respondWithOk($connection, $type, array $data = [])
-    {
-        $this->respond($connection, $type, "ok", $data);
-    }
-
-    /**
-     * @param Connection $connection
-     * @param string     $type
-     * @param array      $data
-     */
-    protected function respondWithError($connection, $type, array $data = [])
-    {
-        $this->respond($connection, $type, "error", $data);
+        return $this->getFrom($message, "type", $default);
     }
 
     /**
@@ -183,17 +154,6 @@ class Server implements MessageComponentInterface
         }
 
         return $default;
-    }
-
-    /**
-     * @param array $message
-     * @param mixed $default
-     *
-     * @return mixed
-     */
-    protected function getTypeFrom(array $message, $default = "unknown")
-    {
-        return $this->getFrom($message, "type", $default);
     }
 
     /**
@@ -231,6 +191,46 @@ class Server implements MessageComponentInterface
         }
 
         return $default;
+    }
+
+    /**
+     * @param Connection $connection
+     * @param string     $type
+     * @param array      $data
+     */
+    protected function respondWithOk($connection, $type, array $data = [])
+    {
+        $this->respond($connection, $type, "ok", $data);
+    }
+
+    /**
+     * @param Connection $connection
+     * @param string     $type
+     * @param string     $status
+     * @param array      $data
+     */
+    protected function respond($connection, $type, $status, array $data = [])
+    {
+        $message = [
+            "type" => $type,
+            "status" => $status,
+        ];
+
+        if (count($data) > 0) {
+            $message["data"] = $data;
+        }
+
+        $connection->send(json_encode($message));
+    }
+
+    /**
+     * @param Connection $connection
+     * @param string     $type
+     * @param array      $data
+     */
+    protected function respondWithError($connection, $type, array $data = [])
+    {
+        $this->respond($connection, $type, "error", $data);
     }
 
     /**
